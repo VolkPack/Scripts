@@ -35,11 +35,9 @@ def sortFiles(fileList):
 def copyFilesToNewDir():
 	newDirName = ("SortedFiles " + str(date.today()))
 	path = os.path.join(DOWNLOADS_DIR, newDirName)
-	if os.mkdir(path):
-		print ("Path Created")
-	else:
-		print("Error Occured Creating a Folder")
-	
+	os.mkdir(path)
+	##TODO Create Folder for file Types
+	##TODO Sort Files into Correct Folders
 	
 	
 copyFilesToNewDir()
