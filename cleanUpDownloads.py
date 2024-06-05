@@ -35,11 +35,14 @@ def findFileNames():
 ## Sorting files in the Dictionary
 def sortFiles(fileList):
 	for file in fileList:
-		# for item in filesTypes:
-		# 	if (file.endswith(item) in filesTypes):
-		# 		filesDict[item].append(file)
-		# 	else:
-		# 		filesDict["misc"].append(file)
+		name, extension = os.path.splitext(file)
+		#print(extension.strip('.'))
+		if extension.strip('.') in filesTypes:
+			print("Extension {}".format(extension))
+			filesDict[extension.strip('.')].append(file)
+		else:
+			print("MISC EXTENSION FOUND")
+			filesDict["misc"].append(file)
 
 def createSubFolders(sortedDir):
 	for folder in FOLDER_TYPES:
@@ -83,10 +86,10 @@ def copyFilesToNewDir():
 				dest = os.path.join(path, FOLDER_TYPES[4])
 				logger.info("Copying {} files to {}".format(key, dest))
 				shutil.copy(src, dest)
-			# if key == "misc":
-			# 	dest = os.path.join(path, FOLDER_TYPES[5])
-			# 	logger.info("Copying {} files to {}".format(key, dest))
-			# 	shutil.copy(src, dest)
+			if key == "misc":
+				dest = os.path.join(path, FOLDER_TYPES[5])
+				logger.info("Copying {} files to {}".format(key, dest))
+				shutil.copy(src, dest)
 
 
 
