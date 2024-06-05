@@ -8,7 +8,7 @@ scriptDescription = "Script Will Sort files in specified --PATH and Sort Files i
 import os
 
 parser = argparse.ArgumentParser(description=scriptDescription)
-parser.add_argument('-p','-P','--PATH', '--path', action="store", dest='path', default=0, help='STRING: provide full path to the downloads (or any) folder to be sorted by types')
+parser.add_argument('-p','-P','--PATH', '--path', action="store", dest='path', default=0, help='STRING: provide full path to the downloads (or any) folder to be sorted by types. Ex: --PATH C:/Users/[username]/Downloads')
 parser.add_argument('-d','-D','--DELETE','--delete', action="store", dest='delete', default=False, help='BOOLEAN: Specify if original files are to be deleted after sorting, False By Default')
 args = parser.parse_args()
 
@@ -33,6 +33,9 @@ FOLDER_TYPES = ["Text Files", "Images", "PDFs", "Executables", "Compressed", "Mi
 
 ## Get List of all The Files
 def findFileNames():
+	if DOWNLOADS_DIR == 0:
+		print("USE --PATH TO SELECT WORKING DIRECTORY. USE --help FOR MORE INFORMATION")
+		exit()
 	files = [f for f in os.listdir(DOWNLOADS_DIR) if os.path.isfile(os.path.join(DOWNLOADS_DIR, f))]	
 	logger.info("Filenames Are added to the List")
 	return files
