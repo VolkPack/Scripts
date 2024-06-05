@@ -1,15 +1,16 @@
-
-## This Script Will Sort Files in Downloads Dir
-## By Copying them into a new Folder and sort
-## into Predetermined File Types placing the rest
-## into Misc Folder if File Extensions do not match
-## presets. It will then delete all files in the
-## original downloads folder keeping only the sorted folder
-import os
 from datetime import date
+from datetime import datetime
 import logging
 import shutil
+import argparse
 
+scriptDescription = "Script Will Sort files in specified --PATH and Sort Files into Preset Folder Types. Setting --DELETE to TRUE will remove originals."
+import os
+
+parser = argparse.ArgumentParser(description=scriptDescription)
+parser.add_argument('-p','-P','--PATH', '--path', action="store", dest='path', default=0, help='STRING: provide full path to the downloads (or any) folder to be sorted by types')
+parser.add_argument('-d','-D','--DELETE','--delete', action="store", dest='delete', default=False, help='BOOLEAN: Specify if original files are to be deleted after sorting, False By Default')
+args = parser.parse_args()
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -26,14 +27,12 @@ filesDict = {
 			"misc": []
 }
 
-#DOWNLOADS_DIR = "C:/Users/XIII/Downloads" ## TODO Pass Downloads Dir as Parameter at Execution time
-DOWNLOADS_DIR = "C:/Users/nikit/Downloads"
+DOWNLOADS_DIR = args.path
 FOLDER_TYPES = ["Text Files", "Images", "PDFs", "Executables", "Compressed", "Misc and Unsorted"]
 
 
 ## Get List of all The Files
 def findFileNames():
-	#files = os.listdir(DOWNLOADS_DIR)
 	files = [f for f in os.listdir(DOWNLOADS_DIR) if os.path.isfile(os.path.join(DOWNLOADS_DIR, f))]	
 	logger.info("Filenames Are added to the List")
 	return files
@@ -42,32 +41,36 @@ def findFileNames():
 def sortFiles(fileList):
 	for file in fileList:
 		name, extension = os.path.splitext(file)
-		#print(extension.strip('.'))
 		if extension.strip('.') in filesTypes:
-			print("Extension {}".format(extension))
 			filesDict[extension.strip('.')].append(file)
 		else:
-			print("MISC EXTENSION FOUND")
 			filesDict["misc"].append(file)
 
+## Creates SunFolders inside new Destination Folder
 def createSubFolders(sortedDir):
 	for folder in FOLDER_TYPES:
 		path = os.path.join(sortedDir, folder)
 		os.mkdir(path)
 		logger.info("Folder {} created".format(folder))
 
+## Deletes Original Files if --delete set to TRUE
 def deleteFiles():
-	for item in findFileNames():
-		os.remove(os.path.join(DOWNLOADS_DIR, item))
+	if args.delete:
+		for item in findFileNames():
+			logger.info("Deleting File: {}".format(item))
+			os.remove(os.path.join(DOWNLOADS_DIR, item))
+	else:
+		logger.info("NO FILES WERE DELETED")
 
-				
+		
+## Sorts and Copies files into new Folders				
 def copyFilesToNewDir():
-	newDirName = ("SortedFiles " + str(date.today()))
+	newDirName = ("SortedFiles ")
 	path = os.path.join(DOWNLOADS_DIR, newDirName)
+	dateandtime = datetime.now()
+	path = path + (dateandtime.strftime("%Y-%m-%d-%H-%M-%S"))
 	os.mkdir(path)
 	createSubFolders(path)
-
-	print(filesDict["misc"])
 
 	for key in filesDict:
 		tempList = filesDict[key]
@@ -75,26 +78,26 @@ def copyFilesToNewDir():
 			src = os.path.join(DOWNLOADS_DIR, item)
 			if key == "txt":
 				dest = os.path.join(path, FOLDER_TYPES[0])
-				logger.info("Copying {} files to {}".format(key, dest))
+				logger.info("Copying {} files to {}".format(item, dest))
 				shutil.copy(src, dest)
 			if key == "jpg" or key == "jpeg" or key == "png":
 				dest = os.path.join(path, FOLDER_TYPES[1])
-				logger.info("Copying {} files to {}".format(key, dest))
+				logger.info("Copying {} files to {}".format(item, dest))
 				shutil.copy(src, dest)
 			if key == "pdf":
 				dest = os.path.join(path, FOLDER_TYPES[2])
-				logger.info("Copying {} files to {}".format(key, dest))
+				logger.info("Copying {} files to {}".format(item, dest))
 				shutil.copy(src, dest)
 			if key == "exe":
 				dest = os.path.join(path, FOLDER_TYPES[3])
 				shutil.copy(src, dest)
 			if key == "rar" or key == "zip":
 				dest = os.path.join(path, FOLDER_TYPES[4])
-				logger.info("Copying {} files to {}".format(key, dest))
+				logger.info("Copying {} files to {}".format(item, dest))
 				shutil.copy(src, dest)
 			if key == "misc":
 				dest = os.path.join(path, FOLDER_TYPES[5])
-				logger.info("Copying {} files to {}".format(key, dest))
+				logger.info("Copying {} files to {}".format(item, dest))
 				shutil.copy(src, dest)
 
 	
