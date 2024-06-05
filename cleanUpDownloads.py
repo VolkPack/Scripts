@@ -1,4 +1,10 @@
-import re
+
+## This Script Will Sort Files in Downloads Dir
+## By Copying them into a new Folder and sort
+## into Predetermined File Types placing the rest
+## into Misc Folder if File Extensions do not match
+## presets. It will then delete all files in the
+## original downloads folder keeping only the sorted folder
 import os
 from datetime import date
 import logging
@@ -20,7 +26,7 @@ filesDict = {
 			"misc": []
 }
 
-#DOWNLOADS_DIR = "C:/Users/XIII/Downloads" ## TODO Change to Universal Later
+#DOWNLOADS_DIR = "C:/Users/XIII/Downloads" ## TODO Pass Downloads Dir as Parameter at Execution time
 DOWNLOADS_DIR = "C:/Users/nikit/Downloads"
 FOLDER_TYPES = ["Text Files", "Images", "PDFs", "Executables", "Compressed", "Misc and Unsorted"]
 
@@ -91,12 +97,7 @@ def copyFilesToNewDir():
 				logger.info("Copying {} files to {}".format(key, dest))
 				shutil.copy(src, dest)
 
-
-
-
-
-	##TODO Sort Files into Correct Folders
 	
 sortFiles(findFileNames())
 copyFilesToNewDir()
-#deleteFiles()
+deleteFiles()
