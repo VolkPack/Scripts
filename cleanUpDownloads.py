@@ -2,6 +2,8 @@ import re
 import os
 from datetime import date
 import logging
+import shutil
+
 
 logger = logging.getLogger(__name__)
 filesTypes = ["txt", "jpg", "jpeg", "pdf", "exe", "rar", "zip", "png"]
@@ -47,12 +49,33 @@ def createSubFolders(sortedDir):
 def copyFilesToNewDir():
 	newDirName = ("SortedFiles " + str(date.today()))
 	path = os.path.join(DOWNLOADS_DIR, newDirName)
-	#os.mkdir(path)
-	#createSubFolders(path)
+	os.mkdir(path)
+	createSubFolders(path)
 
 	for key in filesDict:
-		if key == "txt":
-			
+		tempList = filesDict[key]
+		for item in tempList:
+			src = os.path.join(DOWNLOADS_DIR, item)
+			if key == "txt":
+				dest = os.path.join(path, FOLDER_TYPES[0])
+				shutil.copy(src, dest)
+			if key == "jpg" or key == "jpeg" or key == "png":
+				dest = os.path.join(path, FOLDER_TYPES[1])
+				shutil.copy(src, dest)
+			if key == "pdf":
+				dest = os.path.join(path, FOLDER_TYPES[2])
+				shutil.copy(src, dest)
+			if key == "exe":
+				dest = os.path.join(path, FOLDER_TYPES[3])
+				shutil.copy(src, dest)
+			if key == "rar" or key == "zip":
+				dest = os.path.join(path, FOLDER_TYPES[4])
+				shutil.copy(src, dest)
+			if key == "misc":
+				dest = os.path.join(path, FOLDER_TYPES[5])
+
+
+
 
 	##TODO Create Folder for file Types
 	##TODO Sort Files into Correct Folders
