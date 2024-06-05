@@ -6,6 +6,7 @@ import shutil
 
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 filesTypes = ["txt", "jpg", "jpeg", "pdf", "exe", "rar", "zip", "png"]
 filesDict = {
 			"txt": [],
@@ -28,22 +29,27 @@ FOLDER_TYPES = ["Text Files", "Images", "PDFs", "Executables", "Compressed", "Mi
 def findFileNames():
 	#files = os.listdir(DOWNLOADS_DIR)
 	files = [f for f in os.listdir(DOWNLOADS_DIR) if os.path.isfile(os.path.join(DOWNLOADS_DIR, f))]	
+	logger.info("Filenames Are added to the List")
 	return files
 
 ## Sorting files in the Dictionary
 def sortFiles(fileList):
 	for file in fileList:
-		for type in filesTypes:
-			if (file.endswith(type)):
-				filesDict[type].append(file)
-			else:
-				filesDict["misc"].append(file)
+		# for item in filesTypes:
+		# 	if (file.endswith(item) in filesTypes):
+		# 		filesDict[item].append(file)
+		# 	else:
+		# 		filesDict["misc"].append(file)
 
 def createSubFolders(sortedDir):
 	for folder in FOLDER_TYPES:
 		path = os.path.join(sortedDir, folder)
 		os.mkdir(path)
 		logger.info("Folder {} created".format(folder))
+
+def deleteFiles():
+	for item in findFileNames():
+		os.remove(os.path.join(DOWNLOADS_DIR, item))
 
 				
 def copyFilesToNewDir():
@@ -52,33 +58,42 @@ def copyFilesToNewDir():
 	os.mkdir(path)
 	createSubFolders(path)
 
+	print(filesDict["misc"])
+
 	for key in filesDict:
 		tempList = filesDict[key]
 		for item in tempList:
 			src = os.path.join(DOWNLOADS_DIR, item)
 			if key == "txt":
 				dest = os.path.join(path, FOLDER_TYPES[0])
+				logger.info("Copying {} files to {}".format(key, dest))
 				shutil.copy(src, dest)
 			if key == "jpg" or key == "jpeg" or key == "png":
 				dest = os.path.join(path, FOLDER_TYPES[1])
+				logger.info("Copying {} files to {}".format(key, dest))
 				shutil.copy(src, dest)
 			if key == "pdf":
 				dest = os.path.join(path, FOLDER_TYPES[2])
+				logger.info("Copying {} files to {}".format(key, dest))
 				shutil.copy(src, dest)
 			if key == "exe":
 				dest = os.path.join(path, FOLDER_TYPES[3])
 				shutil.copy(src, dest)
 			if key == "rar" or key == "zip":
 				dest = os.path.join(path, FOLDER_TYPES[4])
+				logger.info("Copying {} files to {}".format(key, dest))
 				shutil.copy(src, dest)
-			if key == "misc":
-				dest = os.path.join(path, FOLDER_TYPES[5])
+			# if key == "misc":
+			# 	dest = os.path.join(path, FOLDER_TYPES[5])
+			# 	logger.info("Copying {} files to {}".format(key, dest))
+			# 	shutil.copy(src, dest)
 
 
 
 
-	##TODO Create Folder for file Types
+
 	##TODO Sort Files into Correct Folders
 	
 sortFiles(findFileNames())
 copyFilesToNewDir()
+#deleteFiles()
