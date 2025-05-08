@@ -7,7 +7,8 @@ import os
 
 scriptDescription = "Script Moves CC/Mods from Directory to Sims4 Mods Folder REQUIRED args: USER, PATH"
 
-
+# TODO Fix the Drive requirement
+# 		Instead of asking for Drive specify exact Location
 parser = argparse.ArgumentParser(description=scriptDescription)
 parser.add_argument('-u','-U','--USER', '--user', action="store", dest='user', default=0, help='STRING: User Name of the account Ex: -U testUser')
 parser.add_argument('-p','-P','--PATH', '--path', action="store", dest='path', default=0, help='STRING: provide full path to the CC/Mods Folder Ex: --PATH C:/AllModsFolder')
